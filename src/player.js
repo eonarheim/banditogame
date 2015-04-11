@@ -1,11 +1,13 @@
 
 
-var Player = ex.Actor.extend({
-	constructor: function(x, y, width, height, color){
-		ex.Actor.apply(this, [x, y, width, height, color]);
+var Player = ex.Actor.extend({	
+	lastFire: Date.now(),
+	constructor: function(x, y, width, height, barrel){
+		ex.Actor.apply(this, [x, y, width, height]);
 		var gunSprite =  Resources.GunSprite.asSprite();
 		gunSprite.scale.setTo(4, 4);
 		this.addDrawing("default", gunSprite);
+		this.barrel = barrel;
 	},
 
 	update: function(engine, delta){
@@ -16,7 +18,7 @@ var Player = ex.Actor.extend({
 
 		// todo find first active pad
 		// todo alternate input method needs to be keyboard and mouse
-		var pad = engine.input.gamepads.at(1);
+		var pad = engine.input.gamepads.at(0);
 
 		// sticks
 		var leftAxisY = pad.getAxes(ex.Input.Axes.LeftStickY);
@@ -36,10 +38,31 @@ var Player = ex.Actor.extend({
 			this.dx = leftVector.x * Config.PlayerSpeed;
 			this.dy = leftVector.y * Config.PlayerSpeed;
 		}
+
+		if(pad.getButton(ex.Input.Buttons.RightTrigger) > .1){
+			this.fire(engine.currentScene);
+		}
+
+		if(pad.getButton(ex.Input.Buttons.LeftTrigger) > .1){
+			this.barrel.reload();
+		}
 	},
 
-	fire: function(){
+	fire: function(scene){
+		var currentTime = Date.now();
+		if(currentTime - this.lastFire > Config.PlayerFireInterval && this.barrel.ammo && !this.barrel.reloading){
+			this.barrel.fire();
+			var bulletOffset = new ex.Vector(90, -30);
+			bulletOffset = bulletOffset.rotate(this.rotation, ex.Vector.Zero);
+			var bullet = new Bullet(this.x + bulletOffset.x, this.y + bulletOffset.y, ex.Vector.fromAngle(this.rotation));
+			scene.add(bullet);
+			this.lastFire = currentTime;
+		}
 
+		if(currentTime - this.lastFire > Config.PlayerFireInterval && this.barrel.ammo === 0){
+			Resources.EmptySound.play();
+			this.lastFire = currentTime;
+		}
 	}
 
 
