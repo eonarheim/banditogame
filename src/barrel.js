@@ -1,12 +1,12 @@
 
-var Barrel = ex.Actor.extend({
+var Barrel = ex.UIActor.extend({
 	frames: [],
 	currentFrame: 0,
 	reloading: false,
 	currentReloadTime: 0,
 	ammo: Config.Ammo,
 	constructor: function(x, y, engine){
-		ex.Actor.apply(this, [x, y, 32*4, 32*4]);
+		ex.UIActor.apply(this, [x, y, 32*4, 32*4]);
 		this.anchor.setTo(0, 0);
 		var barrelSheet = new ex.SpriteSheet(Resources.BarrelSpriteSheet, 7, 1, 32, 32);
 		var that = this;
@@ -20,7 +20,7 @@ var Barrel = ex.Actor.extend({
 	},
 
 	update: function(engine, delta){
-		ex.Actor.prototype.update.apply(this, [engine, delta]);
+		ex.UIActor.prototype.update.apply(this, [engine, delta]);
 		if(this.reloading){
 			this.currentReloadTime += delta;
 

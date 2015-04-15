@@ -31,7 +31,9 @@ var Player = ex.Actor.extend({
 		var leftVector = new ex.Vector(leftAxisX, leftAxisY);
 		var magnitude = leftVector.distance()
 
-		this.rotation = rightVector.toAngle();
+      if(rightVector.distance() > .1){
+		   this.rotation = rightVector.toAngle();
+      }
 
 		if(magnitude > .2){
 			leftVector = leftVector.normalize();
@@ -46,6 +48,10 @@ var Player = ex.Actor.extend({
 		if(pad.getButton(ex.Input.Buttons.LeftTrigger) > .1){
 			this.barrel.reload();
 		}
+
+      if(pad.getButton(ex.Input.Buttons.Face2)){
+         engine.currentScene.camera.setFocus(this.x, this.y);
+      }
 	},
 
 	fire: function(scene){
