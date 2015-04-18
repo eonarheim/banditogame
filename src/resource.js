@@ -4,7 +4,7 @@ var Resources = {
 	BarrelSpriteSheet: new ex.Texture('img/barrel.png'),
    CactusSpriteSheet: new ex.Texture('img/cactus.png'),
 
-	FireSound: new ex.Sound('snd/shoot.wav'),
+	FireSound: new ex.Sound('snd/shoot2.wav'),
 	ReloadSound: new ex.Sound('snd/bulletreload.wav'),
 	EmptySound: new ex.Sound('snd/empty.wav')
 }
