@@ -52,6 +52,8 @@ var Player = ex.Actor.extend({
       if(pad.getButton(ex.Input.Buttons.Face2)){
          engine.currentScene.camera.setFocus(this.x, this.y);
       }
+
+      this.setZIndex(this.y);
 	},
 
 	fire: function(scene){

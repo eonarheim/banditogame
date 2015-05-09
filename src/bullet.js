@@ -22,6 +22,8 @@ var Bullet = ex.Actor.extend({
 
 		this.rotation = direction;
 
+      this.setZIndex(this.y);
+
 	}
 
 });
