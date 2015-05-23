@@ -5,6 +5,8 @@ var Player = ex.Actor.extend({
 	constructor: function(x, y, width, height, barrel){
 		ex.Actor.apply(this, [x, y, width, height]);
 
+      //this.collisionType = ex.CollisionType.Active;
+
 		this.gunSprite =  Resources.GunSprite.asSprite();
       this.spriteSheet = new ex.SpriteSheet(Resources.RobitoSpriteSheet, 12, 1, 64, 64);
       this.downAnim = this.spriteSheet.getAnimationBetween(engine, 0, 5, 100);

@@ -10,6 +10,7 @@ var Cactus = ex.Actor.extend({
       sprite.flipHorizontal = Math.random() > .5 ? true : false;
       sprite.scale.setTo(4, 4);
       this.addDrawing("default", sprite);
+      this.collisionType = ex.CollisionType.Fixed;
 
    },
 
