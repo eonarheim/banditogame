@@ -2,7 +2,7 @@
 
 var Player = ex.Actor.extend({	
 	lastFire: Date.now(),
-	constructor: function(x, y, width, height, barrel){
+	constructor: function(x, y, width, height, barrel, crosshair){
 		ex.Actor.apply(this, [x, y, width, height]);
 
       //this.collisionType = ex.CollisionType.Active;
@@ -40,6 +40,8 @@ var Player = ex.Actor.extend({
       this.setDrawing("idleDown");
 
 		this.barrel = barrel;
+      this.crosshair = new CrossHair(engine.getWidth()/2, engine.getHeight()/2, engine, this);;
+      engine.add(this.crosshair);
 	},
 
 	update: function(engine, delta){
@@ -64,18 +66,40 @@ var Player = ex.Actor.extend({
 
 
 		var rightVector = new ex.Vector(rightAxisX, rightAxisY);
+      var crossHairVector = rightVector.scale(400);
 		var leftVector = new ex.Vector(leftAxisX, leftAxisY);
 		var magnitude = leftVector.distance()
 
       if(rightVector.distance() > .1){
 		   this.gun.rotation = rightVector.toAngle();
+         this.crosshair.x = crossHairVector.x + this.x + this.width/4 + 10;
+         this.crosshair.y = crossHairVector.y + this.y + this.height/4 + 10;
       }
+      
+      
 
 		if(magnitude > .2){
 			leftVector = leftVector.normalize();
 			this.dx = leftVector.x * Config.PlayerSpeed;
 			this.dy = leftVector.y * Config.PlayerSpeed;
 		}
+      
+      if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.W)) {
+         this.dy = -Config.PlayerSpeed;
+      }
+      
+      if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.S)) {
+         this.dy = Config.PlayerSpeed;
+      }
+      
+      if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.A)) {
+         this.dx = -Config.PlayerSpeed;
+      }
+      
+      if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.D)) {
+         this.dx = Config.PlayerSpeed;
+      }
+      
 
 		if(pad.getButton(ex.Input.Buttons.RightTrigger) > .1){
 			this.fire(engine.currentScene);
@@ -106,11 +130,20 @@ var Player = ex.Actor.extend({
 
       if(this.dy === 0){
          if(this.goingUp){
-            this.setDrawing("idleUp");
+            if (this.dx !== 0){
+               this.setDrawing("up");
+            }else{
+               this.setDrawing("idleUp");
+            }
          }
          if(this.goingDown){
-            this.setDrawing("idleDown");
+            if ( this.dx !== 0){
+               this.setDrawing("down");
+            }else{
+               this.setDrawing("idleDown");
+            }
          }
+         
       }
 
       this.setZIndex(this.y);

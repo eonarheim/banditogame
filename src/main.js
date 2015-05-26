@@ -6,12 +6,19 @@ engine.setAntialiasing(false);
 engine.input.gamepads.enabled = true;
 engine.currentScene.camera.lerp = true;
 
+document.oncontextmenu = function () {
+	// do nothing
+	return false;
+}
+
+
 var loader = new ex.Loader();
 for(var resouce in Resources){
 	loader.addResource(Resources[resouce]);
 }
 var barrel = new Barrel(20, 20, engine);
 var player = new Player(engine.getWidth()/2, engine.getHeight()/2 , 100, 200, barrel);
+
 
 var cactus = new Cactus(400, 200);
 var cactus2 = new Cactus(600, 400);
@@ -21,13 +28,14 @@ var cactus3 = new Cactus(500, 700);
 engine.add(player);
 engine.add(barrel);
 
+
 engine.add(cactus);
 engine.add(cactus2);
 engine.add(cactus3);
 
 
 engine.input.keyboard.on("down", function(ev){
-   if(ev.key === ex.Input.Keys.D){
+   if(ev.key === ex.Input.Keys.Q){
       engine.isDebug = !engine.isDebug;
    }
 });
