@@ -1,6 +1,7 @@
 var Resources = {
 	RobitoSpriteSheet: new ex.Texture('img/robito.png'),
 	BaddieSpriteSheet: new ex.Texture('img/baddie.png'),
+	HealthBarSpriteSheet: new ex.Texture('img/healthbar.png'),
     GunSprite: new ex.Texture('img/gun.png'),
     CrossHairSprite: new ex.Texture('img/crosshair.png'),
 	BulletSprite: new ex.Texture('img/bullet.png'),
