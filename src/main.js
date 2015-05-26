@@ -24,6 +24,10 @@ var cactus = new Cactus(400, 200);
 var cactus2 = new Cactus(600, 400);
 var cactus3 = new Cactus(500, 700);
 
+for(var i = 0; i < 100; i++){
+	engine.add(new Baddie(500, 500));
+}
+
 
 engine.add(player);
 engine.add(barrel);
