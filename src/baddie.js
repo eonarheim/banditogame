@@ -134,6 +134,7 @@ var Baddie = ex.Actor.extend({
 		}
 		
 		if(this.health <= 0){
+			engine.add(new Health(this.x, this.y));
 			this.kill();
 		}
 				

@@ -32,7 +32,7 @@ var Bullet = ex.Actor.extend({
 			}
 			
 			if(ce.other !== player && ce.actor.owner === 'player'){
-				ce.other.health -= 4;
+				ce.other.health -= 10;
 				this.kill();
 			}
 			
