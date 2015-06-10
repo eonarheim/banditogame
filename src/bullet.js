@@ -36,7 +36,7 @@ var Bullet = ex.Actor.extend({
 				this.kill();
 			}
 			
-			if(ce.other instanceof Cactus){
+			if(ce.other instanceof Cactus || ce.other instanceof Rock){
 				this.kill();
 			}			
 		});

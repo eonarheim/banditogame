@@ -23,7 +23,7 @@ for(var resouce in Resources){
 	}
 }
 var barrel = new Barrel(20, 20, engine);
-var player = new Player(engine.getWidth()/2, engine.getHeight()/2 , 32*3, 32*3, barrel);
+var player = new Player(engine.getWidth()/2, engine.getHeight()/2 , 32*2.5, 32*2.5, barrel);
 
 
 var cactus = new Cactus(400, 200);
@@ -31,9 +31,18 @@ var cactus2 = new Cactus(600, 400);
 var cactus3 = new Cactus(500, 700);
 var battery = new Battery(20, 400);
 
+for(var i = 0; i < 20; i++){
+	engine.add(new Rock(ex.Util.randomIntInRange(-2000, 2000), ex.Util.randomIntInRange(-2000, 2000)));
+}
+
+for(var i = 0; i < 50; i++){
+	engine.add(new Cactus(ex.Util.randomIntInRange(-2000, 2000), ex.Util.randomIntInRange(-2000, 2000)));
+}
+
+
 var baddies = [];
 
-for(var i = 0; i < 12; i++){
+for(var i = 0; i < 5; i++){
 	(function(){
 		var tempBaddie = new Baddie(500, 500);
 		baddies.push(tempBaddie);
