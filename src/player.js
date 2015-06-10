@@ -173,7 +173,25 @@ var Player = ex.Actor.extend({
             
             
             this.setZIndex(this.y);
+            this.crosshair.setZIndex(this.y + 500);
 	},
+      
+      debugDraw: function(ctx){
+            ex.Actor.prototype.debugDraw.apply(this, [ctx]);		
+		
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, Config.BaddieTargetRadius, 0, Math.PI*2)
+		ctx.closePath();
+		ctx.strokeStyle = 'red';
+		ctx.stroke();
+            
+            ctx.beginPath();
+		ctx.arc(this.x, this.y, Config.PlayerRadius, 0, Math.PI*2);
+		ctx.closePath();
+		ctx.strokeStyle = 'blue';
+		ctx.stroke();
+	
+      },
 
 	fire: function(scene){
 		var currentTime = Date.now();
@@ -183,11 +201,12 @@ var Player = ex.Actor.extend({
 			bulletOffset = bulletOffset.rotate(this.gun.rotation, ex.Vector.Zero);
 			var bullet = new Bullet(this.gun.getWorldX() + bulletOffset.x, 
                                           this.gun.getWorldY() + bulletOffset.y, 
-                                          ex.Vector.fromAngle(this.gun.rotation));
+                                          ex.Vector.fromAngle(this.gun.rotation),
+                                          'player');
                                           
-                  bullet.owner = 'player';
+                  
 			scene.add(bullet);
-                  this.scene.camera.shake(15, 15, 150);
+                  this.scene.camera.shake(4, 4, 150);
 			this.lastFire = currentTime;
 		}
 

@@ -5,6 +5,11 @@ var Config = {
 	PlayerHitInterval: 1000,
 	Ammo: 6,
 	ReloadTime: 1000,
+	
+	CameraElasticity: .01,
+	CameraFriction: .21,
+	CameraShake: 7,
+	CameraShakeDuration: 800,
 
     CactusWidth: 100,
     CactusHeight: 100,
@@ -20,19 +25,24 @@ var Config = {
 			anchory: .75
 		},
 		{
-			width: 48,
-			height: 32,
+			width: 48*2,
+			height: 32*2,
 			anchory: .50
 		}
 	],
 	
 	BaddieWidth: 100,
     BaddieHeight: 100,
-	BaddieSpeed: 500,
+	BaddieSpeed: 300,
+	BaddieMinMoveTime: 500,
+	BaddieMaxMoveTime: 2000,
 	BaddieChangeInterval: 1000,
 	BaddieFireInterval: 100,
 	BaddieClusterNumber: 3,
+	BaddieTargetRadius: 200,
 
 	BulletSize: 20,
-	BulletSpeed: 700
+	BulletSpeed: 550,
+	BulletLifetime: 20000,
+	PlayerBulletSpeed: 800
 }
