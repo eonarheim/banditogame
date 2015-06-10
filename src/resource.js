@@ -1,11 +1,18 @@
 var Resources = {
-	RobitoSpriteSheet: new ex.Texture('img/robito.png'),
+	RobitoSpriteSheet: new ex.Texture('img/newroboto.png'),
 	BaddieSpriteSheet: new ex.Texture('img/baddie.png'),
 	HealthBarSpriteSheet: new ex.Texture('img/healthbar.png'),
-    GunSprite: new ex.Texture('img/gun.png'),
+    GunSprite: new ex.Texture('img/newgun.png'),
+	ShotgunSprite: new ex.Texture('img/shutgun.png'),
     CrossHairSprite: new ex.Texture('img/crosshair.png'),
 	BulletSprite: new ex.Texture('img/bullet.png'),
+	BatterySpriteSheet: new ex.Texture('img/battery.png'),
 	BarrelSpriteSheet: new ex.Texture('img/barrel.png'),
+	Cactii: [
+		new ex.Texture('img/cactus1.png'),
+		new ex.Texture('img/cactus2.png'),
+		new ex.Texture('img/cactus3.png'),
+	],
     CactusSpriteSheet: new ex.Texture('img/cactus.png'),
 
 

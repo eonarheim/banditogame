@@ -1,163 +1,193 @@
 
 
 var Player = ex.Actor.extend({	
-	lastFire: Date.now(),
-	constructor: function(x, y, width, height, barrel, crosshair){
-		ex.Actor.apply(this, [x, y, width, height]);
-
-      //this.collisionType = ex.CollisionType.Active;
-
-		this.gunSprite =  Resources.GunSprite.asSprite();
-      this.spriteSheet = new ex.SpriteSheet(Resources.RobitoSpriteSheet, 12, 1, 64, 64);
-      this.downAnim = this.spriteSheet.getAnimationBetween(engine, 0, 5, 100);
-      this.upAnim = this.spriteSheet.getAnimationBetween(engine, 6, 11, 100);
-      this.idleDownAnim = this.spriteSheet.getSprite(0);
-      this.idleUpAnim = this.spriteSheet.getSprite(6);
-
-		this.gunSprite.scale.setTo(4, 4);
-
-      //this.gun = new ex.Actor(width/2, height/4, 20, 20);
-      this.gunAnchor = new ex.Actor(width/2 + this.x, height/4 + this.y);      
-      this.gun = new ex.Actor(x, y, 20, 20);
-      this.gun.addDrawing("default", this.gunSprite);
-
-      
-      engine.add(this.gun, 0);
-      this.gun.follow(this.gunAnchor, 12);
-
-      this.idleDownAnim.scale.setTo(4, 4);
-      this.downAnim.scale.setTo(4, 4);
-      this.downAnim.loop = true;
-
-      this.idleUpAnim.scale.setTo(4, 4);
-      this.upAnim.scale.setTo(4, 4);
-      this.upAnim.loop = true;
-
-		this.addDrawing("up", this.upAnim);
-      this.addDrawing("idleUp", this.idleUpAnim);
-      this.addDrawing("down", this.downAnim);
-      this.addDrawing("idleDown", this.idleDownAnim);
-      this.setDrawing("idleDown");
-
-		this.barrel = barrel;
-      this.crosshair = new CrossHair(engine.getWidth()/2, engine.getHeight()/2, engine, this);;
-      engine.add(this.crosshair);
+      lastFire: Date.now(),
+      hit: false,
+      lastHit: Date.now(),
+      goingLeft: true,
+      goingRight: false,
+      constructor: function(x, y, width, height, barrel, crosshair){
+            ex.Actor.apply(this, [x, y, width, height]);
+            
+            //this.collisionType = ex.CollisionType.Active;
+            
+            this.gunSprite =  Resources.GunSprite.asSprite();
+            this.spriteSheet = new ex.SpriteSheet(Resources.RobitoSpriteSheet, 8, 1, 32, 32);
+            
+            // configure animations
+            this.leftAnim = this.spriteSheet.getAnimationBetween(engine, 3, 7, 100);
+            this.leftAnim.scale.setTo(4, 4);
+            this.leftAnim.loop = true;
+            
+            this.rightAnim = this.spriteSheet.getAnimationBetween(engine, 3, 7, 100);
+            this.rightAnim.flipHorizontal = true;
+            this.rightAnim.scale.setTo(4, 4);
+            this.rightAnim.loop = true;
+            
+            this.leftIdleAnim = this.spriteSheet.getAnimationByIndices(engine, [3, 3, 3, 3, 3, 3, 3, 3, 2], 200);
+            this.leftIdleAnim.scale.setTo(4, 4);
+            this.leftIdleAnim.loop = true;
+            
+            this.rightIdleAnim = this.spriteSheet.getAnimationByIndices(engine, [3, 3, 3, 3, 3, 3, 3, 3, 2], 200);
+            this.rightIdleAnim.flipHorizontal = true;
+            this.rightIdleAnim.scale.setTo(4, 4);
+            this.rightIdleAnim.loop = true;
+            
+            this.leftDamageAnim = this.spriteSheet.getAnimationByIndices(engine, [0, 1, 0, 1], 400);
+            this.leftDamageAnim.scale.setTo(4, 4);
+            this.leftDamageAnim.loop = true;
+            
+            this.rigthDamageAnim = this.spriteSheet.getAnimationByIndices(engine, [0, 1, 0, 1], 400);
+            this.rigthDamageAnim.flipHorizontal = true;
+            this.rigthDamageAnim.scale.setTo(4, 4);
+            this.rigthDamageAnim.loop = true;
+            
+            
+            this.gunSprite.scale.setTo(4, 4);
+             
+            this.gun = new ex.Actor(0, this.getHeight()/5, 20, 20);
+            this.gun.addDrawing("default", this.gunSprite);           
+            
+            this.addChild(this.gun);
+                                                
+            this.addDrawing("left", this.leftAnim);
+            this.addDrawing("right", this.rightAnim);
+            this.addDrawing("leftIdle", this.leftIdleAnim);
+            this.addDrawing("rightIdle", this.rightIdleAnim);
+            this.addDrawing("leftDamage", this.leftDamageAnim);
+            this.addDrawing("rightDamage", this.rigthDamageAnim);
+            
+            this.setDrawing("leftIdle");
+            
+            this.barrel = barrel;
+            this.crosshair = new CrossHair(engine.getWidth()/2, engine.getHeight()/2, engine, this);
+            
+            this.collisionType = ex.CollisionType.Passive;
+            
+            engine.add(this.crosshair);
 	},
 
 	update: function(engine, delta){
-		ex.Actor.prototype.update.apply(this, [engine, delta]);
-      this.gunAnchor.dx = this.dx;
-      this.gunAnchor.dy = this.dy;
-      this.gunAnchor.update(engine, delta);
-		// clear move
-		this.dx = 0;
-		this.dy = 0;
-
-
-		// todo find first active pad
-		// todo alternate input method needs to be keyboard and mouse
-		var pad = engine.input.gamepads.at(0);
-
-		// sticks
-		var leftAxisY = pad.getAxes(ex.Input.Axes.LeftStickY);
-		var leftAxisX = pad.getAxes(ex.Input.Axes.LeftStickX);
-		var rightAxisX = pad.getAxes(ex.Input.Axes.RightStickX);
-		var rightAxisY = pad.getAxes(ex.Input.Axes.RightStickY);
-
-
-		var rightVector = new ex.Vector(rightAxisX, rightAxisY);
-      var crossHairVector = rightVector.scale(400);
-		var leftVector = new ex.Vector(leftAxisX, leftAxisY);
-		var magnitude = leftVector.distance()
-
-      if(rightVector.distance() > .1){
-		   this.gun.rotation = rightVector.toAngle();
-         this.crosshair.x = crossHairVector.x + this.x + this.width/4 + 10;
-         this.crosshair.y = crossHairVector.y + this.y + this.height/4 + 10;
-      }
-      
-      
-
-		if(magnitude > .2){
-			leftVector = leftVector.normalize();
-			this.dx = leftVector.x * Config.PlayerSpeed;
-			this.dy = leftVector.y * Config.PlayerSpeed;
-		}
-      
-      if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.W)) {
-         this.dy = -Config.PlayerSpeed;
-      }
-      
-      if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.S)) {
-         this.dy = Config.PlayerSpeed;
-      }
-      
-      if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.A)) {
-         this.dx = -Config.PlayerSpeed;
-      }
-      
-      if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.D)) {
-         this.dx = Config.PlayerSpeed;
-      }
-      
-
-		if(pad.getButton(ex.Input.Buttons.RightTrigger) > .1){
-			this.fire(engine.currentScene);
-		}
-
-		if(pad.getButton(ex.Input.Buttons.LeftTrigger) > .1){
-			this.barrel.reload();
-		}
-
-      if(pad.getButton(ex.Input.Buttons.Face2)){
-         engine.currentScene.camera.setFocus(this.x, this.y);
-      }
-
-      if(this.dy > 0){
-         
-         this.setDrawing("down");
-         this.gun.setZIndex(this.y + 3);
-         this.goingDown = true;
-         this.goingUp = false;
-      }
-      if(this.dy < 0){
-         
-         this.setDrawing("up");
-         this.gun.setZIndex(this.y - 3);
-         this.goingUp = true;
-         this.goingDown = false;
-      }
-
-      if(this.dy === 0){
-         if(this.goingUp){
-            if (this.dx !== 0){
-               this.setDrawing("up");
-            }else{
-               this.setDrawing("idleUp");
+            ex.Actor.prototype.update.apply(this, [engine, delta]);
+            
+            // clear move
+            this.dx = 0;
+            this.dy = 0;
+            
+            
+            // todo find first active pad
+            // todo alternate input method needs to be keyboard and mouse
+            var pad = engine.input.gamepads.at(0);
+            
+            // sticks
+            var leftAxisY = pad.getAxes(ex.Input.Axes.LeftStickY);
+            var leftAxisX = pad.getAxes(ex.Input.Axes.LeftStickX);
+            var rightAxisX = pad.getAxes(ex.Input.Axes.RightStickX);
+            var rightAxisY = pad.getAxes(ex.Input.Axes.RightStickY);
+            
+            
+            var rightVector = new ex.Vector(rightAxisX, rightAxisY);
+            var crossHairVector = rightVector.scale(400);
+            var leftVector = new ex.Vector(leftAxisX, leftAxisY);
+            var magnitude = leftVector.distance()
+            
+            if(rightVector.distance() > .1){
+               this.gun.rotation = rightVector.toAngle();
+               this.crosshair.x = crossHairVector.x + this.x + this.width/4 + 10;
+               this.crosshair.y = crossHairVector.y + this.y + this.height/4 + 10;                             
             }
-         }
-         if(this.goingDown){
-            if ( this.dx !== 0){
-               this.setDrawing("down");
-            }else{
-               this.setDrawing("idleDown");
+                        
+            if(magnitude > .2){
+            	leftVector = leftVector.normalize();
+            	this.dx = leftVector.x * Config.PlayerSpeed;
+            	this.dy = leftVector.y * Config.PlayerSpeed;
             }
-         }
-         
-      }
-
-      this.setZIndex(this.y);
+            
+            if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.W)) {
+               this.dy = -Config.PlayerSpeed;
+            }
+            
+            if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.S)) {
+               this.dy = Config.PlayerSpeed;
+            }
+            
+            if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.A)) {
+               this.dx = -Config.PlayerSpeed;
+            }
+            
+            if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.D)) {
+               this.dx = Config.PlayerSpeed;
+            }
+            
+            
+            if(pad.getButton(ex.Input.Buttons.RightTrigger) > .1){
+            	this.fire(engine.currentScene);
+            }
+            
+            if(pad.getButton(ex.Input.Buttons.LeftTrigger) > .1){
+            	this.barrel.reload();
+            }
+            
+            if(pad.getButton(ex.Input.Buttons.Face2)){
+               engine.currentScene.camera.setFocus(this.x, this.y);
+            }
+            
+            if(!this.hit){
+                  if(this.dx > 0){
+                     
+                     this.setDrawing("right");
+                     
+                     this.goingRight = true;
+                     this.goingLeft = false;
+                  }
+                  if(this.dx < 0){
+                     
+                     this.setDrawing("left");
+                     
+                     this.goingLeft = true;
+                     this.goingRight = false;
+                  }
+                  
+                  if(this.dx === 0){
+                     if(this.goingRight){
+                        if (this.dy === 0){
+                           this.setDrawing("rightIdle");
+                        }else{
+                           this.setDrawing("right")
+                        }
+                     }
+                     if(this.goingLeft){
+                        if ( this.dy === 0){
+                           this.setDrawing("leftIdle");
+                        }else{
+                            this.setDrawing("left"); 
+                        }
+                     }               
+                  }
+            }
+            
+            var currentTime = Date.now();
+            if(currentTime - this.lastHit > Config.PlayerHitInterval && this.hit){                  
+                  this.hit = false;
+            }
+            
+            
+            this.setZIndex(this.y);
 	},
 
 	fire: function(scene){
 		var currentTime = Date.now();
 		if(currentTime - this.lastFire > Config.PlayerFireInterval && this.barrel.ammo && !this.barrel.reloading){
 			this.barrel.fire();
-			var bulletOffset = new ex.Vector(90, -30);
+			var bulletOffset = new ex.Vector(30, 0);
 			bulletOffset = bulletOffset.rotate(this.gun.rotation, ex.Vector.Zero);
-			var bullet = new Bullet(this.gun.getWorldX() + bulletOffset.x, this.gun.getWorldY() + bulletOffset.y, ex.Vector.fromAngle(this.gun.rotation));
+			var bullet = new Bullet(this.gun.getWorldX() + bulletOffset.x, 
+                                          this.gun.getWorldY() + bulletOffset.y, 
+                                          ex.Vector.fromAngle(this.gun.rotation));
+                                          
+                  bullet.owner = 'player';
 			scene.add(bullet);
-         this.scene.camera.shake(15, 15, 150);
+                  this.scene.camera.shake(15, 15, 150);
 			this.lastFire = currentTime;
 		}
 
@@ -165,7 +195,22 @@ var Player = ex.Actor.extend({
 			Resources.EmptySound.play();
 			this.lastFire = currentTime;
 		}
-	}
+	},
+      
+      takeDamage: function(value){
+            this.hit = true;  
+            this.lastHit = Date.now();
+            value = value || 1;
+            
+            battery.level = Math.max((battery.level - value), 0);
+            if(this.goingRight){
+                  this.setDrawing("rightDamage");     
+            }
+            
+            if(this.goingLeft){
+                  this.setDrawing("leftDamage");
+            }           
+      }
 
 
 

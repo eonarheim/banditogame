@@ -11,6 +11,12 @@ var CrossHair = ex.Actor.extend({
 			that.x = pe.x;
 			that.y = pe.y;
 			player.gun.rotation = new ex.Vector(pe.x - player.x, pe.y - player.y).toAngle();
+			
+            if(that.x < player.x){
+               player.gunSprite.flipVertical = true;
+            }else{
+               player.gunSprite.flipVertical = false;   
+            }
 		});
 		
 		engine.input.pointers.primary.on("down", function(pe){

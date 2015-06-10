@@ -7,30 +7,48 @@ engine.input.gamepads.enabled = true;
 engine.currentScene.camera.lerp = true;
 
 document.oncontextmenu = function () {
-	// do nothing
+	// do nothing on right click
 	return false;
 }
 
 
 var loader = new ex.Loader();
 for(var resouce in Resources){
-	loader.addResource(Resources[resouce]);
+	if(!Resources[resouce].length){
+		loader.addResource(Resources[resouce]);
+	}else{
+		Resources[resouce].forEach(function(r){
+			loader.addResource(r);
+		});
+	}
 }
 var barrel = new Barrel(20, 20, engine);
-var player = new Player(engine.getWidth()/2, engine.getHeight()/2 , 100, 200, barrel);
+var player = new Player(engine.getWidth()/2, engine.getHeight()/2 , 32*3, 32*3, barrel);
 
 
 var cactus = new Cactus(400, 200);
 var cactus2 = new Cactus(600, 400);
 var cactus3 = new Cactus(500, 700);
+var battery = new Battery(20, 400);
 
-for(var i = 0; i < 1000; i++){
-	engine.add(new Baddie(500, 500));
+var baddies = [];
+
+for(var i = 0; i < 1; i++){
+	(function(){
+		var tempBaddie = new Baddie(500, 500);
+		baddies.push(tempBaddie);
+		engine.add(tempBaddie);
+	})();
+	
 }
 
 
+// todo this is bad
+setInterval(function(){ baddies.forEach(function(b){b.changeLocation();}) }, 2000);
+
 engine.add(player);
 engine.add(barrel);
+engine.add(battery);
 
 
 engine.add(cactus);
@@ -47,4 +65,6 @@ engine.input.keyboard.on("down", function(ev){
 engine.start(loader).then(function(){
 	// game loaded
 	console.log("Game loaded");
+	
+	
 });
