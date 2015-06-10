@@ -20,19 +20,21 @@ var Config = {
 			anchory: .75
 		},
 		{
-			width: 48,
-			height: 32,
+			width: 48*2,
+			height: 32*2,
 			anchory: .50
 		}
 	],
 	
 	BaddieWidth: 100,
     BaddieHeight: 100,
-	BaddieSpeed: 500,
+	BaddieSpeed: 300,
 	BaddieChangeInterval: 1000,
 	BaddieFireInterval: 100,
 	BaddieClusterNumber: 3,
+	BaddieTargetRadius: 200,
 
 	BulletSize: 20,
-	BulletSpeed: 700
+	BulletSpeed: 550,
+	PlayerBulletSpeed: 800
 }

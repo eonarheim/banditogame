@@ -2,6 +2,7 @@
 
 
 var Cactus = ex.Actor.extend({
+   
    constructor: function(x, y){
       ex.Actor.apply(this, [x, y, Config.CactusWidth, Config.CactusHeight]);
       

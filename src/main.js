@@ -33,7 +33,7 @@ var battery = new Battery(20, 400);
 
 var baddies = [];
 
-for(var i = 0; i < 1; i++){
+for(var i = 0; i < 5; i++){
 	(function(){
 		var tempBaddie = new Baddie(500, 500);
 		baddies.push(tempBaddie);

@@ -23,7 +23,7 @@ var Baddie = ex.Actor.extend({
 		anim.scale.setTo(4, 4);
 		anim.loop = true;
 		
-		this.health = this.MAXHEALTH = 10;
+		this.health = this.MAXHEALTH = 30;
 		
 		this.leftAnim = anim;
 		this.rightAnim = spriteSheet.getAnimationBetween(engine, 1, 6, 100);
@@ -81,11 +81,12 @@ var Baddie = ex.Actor.extend({
 		var targetY = Config.PlayerRadius * Math.sin(randomAngle) + player.y;
 		
 		var that = this;
-		this.moveTo(targetX, targetY, Config.BaddieSpeed).asPromise().then(function(){
+		this.moveTo(targetX, targetY, Config.BaddieSpeed).delay(1000).asPromise().then(function(){
 			that.fire(engine.currentScene);			
 		});
-		
-		this.gun.rotation = (new ex.Vector(targetX, targetY).minus(new ex.Vector(this.x, this.y))).toAngle();
+		if(this.gun){
+			this.gun.rotation = (new ex.Vector(targetX, targetY).minus(new ex.Vector(this.x, this.y))).toAngle();
+		}
 		
 	},
 	
@@ -124,6 +125,10 @@ var Baddie = ex.Actor.extend({
 				this.gunSprite.flipVertical = false;
 			}
 		}
+		
+		if(this.health <= 0){
+			this.kill();
+		}
 				
 		this.setZIndex(this.y);			
 	},
@@ -131,14 +136,18 @@ var Baddie = ex.Actor.extend({
 	draw: function(ctx, delta){
 		ex.Actor.prototype.draw.apply(this, [ctx, delta]);
 		
-		var index = Math.max(this.MAXHEALTH - this.health, 0);		
+		var index = Math.max(this.MAXHEALTH - Math.max(this.health, 0), 0);		
 		
 		this.healthbar[index].draw(ctx, this.x - this.getWidth()/2, this.y-140);
 	},
 	
 	fire: function(scene){
 		
-		this.gun.rotation = (new ex.Vector(player.x, player.y)).minus(new ex.Vector(this.x, this.y)).toAngle();
+		var randomAngle = ex.Util.randomInRange(0, 2*Math.PI);
+		var targetX = Config.BaddieTargetRadius * Math.cos(randomAngle) + player.x;
+		var targetY = Config.BaddieTargetRadius * Math.sin(randomAngle) + player.y;
+		
+		this.gun.rotation = (new ex.Vector(targetX, targetY)).minus(new ex.Vector(this.x, this.y)).toAngle();
 		
 		var currentTime = Date.now();
 		if(currentTime - this.lastFire > Config.BaddieFireInterval){			
@@ -146,8 +155,9 @@ var Baddie = ex.Actor.extend({
 			bulletOffset = bulletOffset.rotate(this.gun.rotation, ex.Vector.Zero);
 			var bullet = new Bullet(this.gun.getWorldX() + bulletOffset.x,  
 				                    this.gun.getWorldY() + bulletOffset.y, 
-									ex.Vector.fromAngle(this.gun.rotation));
-			bullet.owner = 'baddie';
+									ex.Vector.fromAngle(this.gun.rotation),
+									'baddie');
+			
 									
 			scene.add(bullet);
 

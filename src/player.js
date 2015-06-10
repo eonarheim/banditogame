@@ -183,9 +183,10 @@ var Player = ex.Actor.extend({
 			bulletOffset = bulletOffset.rotate(this.gun.rotation, ex.Vector.Zero);
 			var bullet = new Bullet(this.gun.getWorldX() + bulletOffset.x, 
                                           this.gun.getWorldY() + bulletOffset.y, 
-                                          ex.Vector.fromAngle(this.gun.rotation));
+                                          ex.Vector.fromAngle(this.gun.rotation),
+                                          'player');
                                           
-                  bullet.owner = 'player';
+                  
 			scene.add(bullet);
                   this.scene.camera.shake(15, 15, 150);
 			this.lastFire = currentTime;
