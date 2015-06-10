@@ -15,6 +15,7 @@ var Health = ex.Actor.extend({
 		this.on('collision', function(ce){
 			if(ce.other === player){
 				battery.level = Math.min(battery.level + 1, battery.maxLevel);
+				Resources.PickupSound.play();
 				this.kill();
 			} 
 		});
