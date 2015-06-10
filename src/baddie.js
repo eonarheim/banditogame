@@ -5,6 +5,7 @@
 var Baddie = ex.Actor.extend({
 	lastChange: Date.now(),
 	lastFire: Date.now(),
+	lastTarget: null,
 	constructor: function(x, y) {
 		ex.Actor.apply(this, [x, y, Config.BaddieWidth, Config.BaddieHeight]);
 		
@@ -118,11 +119,17 @@ var Baddie = ex.Actor.extend({
 		//this.changeDir();
 		
 		if(this.gun){
-			
+			/*
 			if(this.dx < 0){
 				this.gunSprite.flipVertical = true;
-			}else{
+			} else if (this.dx > 0) {
 				this.gunSprite.flipVertical = false;
+			}*/
+			
+			if(this.gun.rotation > -Math.PI/2 && this.gun.rotation < Math.PI/2){
+				this.gunSprite.flipVertical = false;
+			}else{
+				this.gunSprite.flipVertical = true;
 			}
 		}
 		
@@ -141,11 +148,30 @@ var Baddie = ex.Actor.extend({
 		this.healthbar[index].draw(ctx, this.x - this.getWidth()/2, this.y-140);
 	},
 	
+	debugDraw: function(ctx){
+		ex.Actor.prototype.debugDraw.apply(this, [ctx]);
+		
+		var aim = ex.Vector.fromAngle(this.gun.rotation).scale(500).plus(new ex.Vector(this.x, this.y));
+		
+		ex.Util.drawLine(ctx, ex.Color.Red.toString(), this.x, this.y, aim.x, aim.y);
+		
+		if(this.lastTarget){		
+			
+			ctx.beginPath();
+			ctx.arc(this.lastTarget.x, this.lastTarget.y, 20, 0, Math.PI*2)
+			ctx.closePath();
+			ctx.strokeStyle = 'red';
+			ctx.stroke();
+		}
+		
+	},
+	
 	fire: function(scene){
 		
 		var randomAngle = ex.Util.randomInRange(0, 2*Math.PI);
 		var targetX = Config.BaddieTargetRadius * Math.cos(randomAngle) + player.x;
 		var targetY = Config.BaddieTargetRadius * Math.sin(randomAngle) + player.y;
+		this.lastTarget = new ex.Vector(targetX, targetY);
 		
 		this.gun.rotation = (new ex.Vector(targetX, targetY)).minus(new ex.Vector(this.x, this.y)).toAngle();
 		

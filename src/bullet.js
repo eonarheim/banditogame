@@ -2,6 +2,7 @@
 
 var Bullet = ex.Actor.extend({
 	owner: null,
+	life: Config.BulletLifetime,
 	constructor: function(x, y, direction, owner){
 		ex.Actor.apply(this, [x, y, Config.BulletSize, Config.BulletSize]);
 		var bulletSprite =  Resources.BulletSprite.asSprite();
@@ -20,12 +21,12 @@ var Bullet = ex.Actor.extend({
 		this.collisionType = ex.CollisionType.Active;
 		
 		this.on("exitviewport", function(){
-			this.kill();
+			//this.kill();
 		});		
 		
 		this.on('collision', function(ce){	
 			if(ce.other === player && ce.actor.owner !== 'player'){
-				engine.currentScene.camera.shake(10, 10, 1000);
+				engine.currentScene.camera.shake(Config.CameraShake, Config.CameraShake, Config.CameraShakeDuration);
 				player.takeDamage();
 				this.kill();	
 			}
@@ -37,14 +38,17 @@ var Bullet = ex.Actor.extend({
 			
 			if(ce.other instanceof Cactus){
 				this.kill();
-			}
-			
-			
+			}			
 		});
 	},
 
 	update: function(engine, delta){
 		ex.Actor.prototype.update.apply(this, [engine, delta]);
+		
+		this.life -= delta;
+		if(this.life < 0){
+			this.kill();
+		}
 
 		var direction = new ex.Vector(this.dx, this.dy).toAngle();
 

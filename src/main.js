@@ -33,7 +33,7 @@ var battery = new Battery(20, 400);
 
 var baddies = [];
 
-for(var i = 0; i < 5; i++){
+for(var i = 0; i < 12; i++){
 	(function(){
 		var tempBaddie = new Baddie(500, 500);
 		baddies.push(tempBaddie);
@@ -43,8 +43,8 @@ for(var i = 0; i < 5; i++){
 }
 
 
-// todo this is bad
-setInterval(function(){ baddies.forEach(function(b){b.changeLocation();}) }, 2000);
+// todo this is bad use ex timers in baddies to vary movement
+setInterval(function(){ baddies.forEach(function(b){b.changeLocation();}) }, 6000);
 
 engine.add(player);
 engine.add(barrel);
@@ -54,6 +54,23 @@ engine.add(battery);
 engine.add(cactus);
 engine.add(cactus2);
 engine.add(cactus3);
+
+
+var cameraVel = new ex.Vector(0, 0);
+engine.on('update', function(){
+	var focus = engine.currentScene.camera.getFocus().toVector();
+	var position = new ex.Vector(player.x, player.y);
+	
+	var stretch = position.minus(focus).scale(Config.CameraElasticity);
+	cameraVel = cameraVel.plus(stretch);
+	
+	var friction = cameraVel.scale(-1).scale(Config.CameraFriction);
+	cameraVel = cameraVel.plus(friction);
+	
+	focus = focus.plus(cameraVel);
+	engine.currentScene.camera.setFocus(focus.x, focus.y);
+	
+});
 
 
 engine.input.keyboard.on("down", function(ev){

@@ -31,7 +31,7 @@ var CrossHair = ex.Actor.extend({
 	},
 	
 	onInitialize: function (engine){
-		this.setZIndex(999);
+		this.setZIndex(player.getZIndex()-99);
 	},
 	
 });

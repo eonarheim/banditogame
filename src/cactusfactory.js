@@ -2,24 +2,25 @@
 
 
 var Cactus = ex.Actor.extend({
-   
-   constructor: function(x, y){
+  
+   cactusType: 0,
+   constructor: function(x, y, cactusType){
       ex.Actor.apply(this, [x, y, Config.CactusWidth, Config.CactusHeight]);
-      
+      this.cactusType = cactusType === undefined ? Math.floor(Math.random() * 3) : cactusType;
       this.collisionType = ex.CollisionType.Fixed;
 
    },
    
    onInitialize: function(){
-      var cactusPicker = Math.floor(Math.random() * 3);
-      var sprite = Resources.Cactii[cactusPicker].asSprite();
+      
+      var sprite = Resources.Cactii[this.cactusType].asSprite();
       sprite.flipHorizontal = Math.random() > .5 ? true : false;
       sprite.scale.setTo(4, 4);
       this.addDrawing("default", sprite);
       
-      this.anchor.setTo(.5, Config.Cactii[cactusPicker].anchory);
-      this.setWidth(Config.Cactii[cactusPicker].width);
-      this.setHeight(Config.Cactii[cactusPicker].height);
+      this.anchor.setTo(.5, Config.Cactii[this.cactusType].anchory);
+      this.setWidth(Config.Cactii[this.cactusType].width);
+      this.setHeight(Config.Cactii[this.cactusType].height);
    },
 
    update: function(engine, delta){
