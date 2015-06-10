@@ -20,5 +20,7 @@ var Resources = {
 
 	FireSound: new ex.Sound('snd/shoot2.wav'),
 	ReloadSound: new ex.Sound('snd/bulletreload.wav'),
-	EmptySound: new ex.Sound('snd/empty.wav')
+	DamageSound: new ex.Sound('snd/damage.wav'),
+	EmptySound: new ex.Sound('snd/empty.wav'),
+	PickupSound: new ex.Sound('snd/pickup2.wav')
 }

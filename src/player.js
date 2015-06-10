@@ -222,6 +222,7 @@ var Player = ex.Actor.extend({
             value = value || 1;
             
             battery.level = Math.max((battery.level - value), 0);
+            Resources.DamageSound.play();
             if(this.goingRight){
                   this.setDrawing("rightDamage");     
             }
