@@ -13,6 +13,7 @@ var Resources = {
 		new ex.Texture('img/cactus2.png'),
 		new ex.Texture('img/cactus3.png'),
 	],
+	RockSpriteSheet: new ex.Texture('img/rock.png'),
     CactusSpriteSheet: new ex.Texture('img/cactus.png'),
 
 
