@@ -25,13 +25,13 @@ var Bullet = ex.Actor.extend({
 		});		
 		
 		this.on('collision', function(ce){	
-			if(ce.other === player && ce.actor.owner !== 'player'){
+			if(players.indexOf(ce.other) > -1 && ce.actor.owner !== 'player'){
 				engine.currentScene.camera.shake(Config.CameraShake, Config.CameraShake, Config.CameraShakeDuration);
-				player.takeDamage();
+				ce.other.takeDamage();
 				this.kill();	
 			}
 			
-			if(ce.other !== player && ce.actor.owner === 'player'){
+			if(players.indexOf(ce.other) === -1 && ce.actor.owner === 'player'){
 				ce.other.health -= 10;
 				this.kill();
 			}

@@ -6,13 +6,14 @@ var Player = ex.Actor.extend({
       lastHit: Date.now(),
       goingLeft: true,
       goingRight: false,
-      constructor: function(x, y, width, height, barrel, crosshair){
+      constructor: function(x, y, width, height, controllerIndex){
             ex.Actor.apply(this, [x, y, width, height]);
             
+            this.controllerIndex = controllerIndex;
             //this.collisionType = ex.CollisionType.Active;
             
             this.gunSprite =  Resources.GunSprite.asSprite();
-            this.spriteSheet = new ex.SpriteSheet(Resources.RobitoSpriteSheet, 8, 1, 32, 32);
+            this.spriteSheet = new ex.SpriteSheet(controllerIndex === 0? Resources.RobitoSpriteSheet : Resources.RobitoSpriteSheetRed, 8, 1, 32, 32);
             
             // configure animations
             this.leftAnim = this.spriteSheet.getAnimationBetween(engine, 3, 7, 100);
@@ -59,12 +60,15 @@ var Player = ex.Actor.extend({
             
             this.setDrawing("leftIdle");
             
-            this.barrel = barrel;
+            this.barrel = new Barrel(controllerIndex === 0 ? 20 : engine.getWidth() - 20 - 32*4, 20, engine);
             this.crosshair = new CrossHair(engine.getWidth()/2, engine.getHeight()/2, engine, this);
+            this.battery = new Battery(controllerIndex === 0 ? 20 : engine.getWidth() - 20 - 32*4, 400);
             
             this.collisionType = ex.CollisionType.Passive;
             
             engine.add(this.crosshair);
+            engine.add(this.barrel);
+            engine.add(this.battery);
 	},
 
 	update: function(engine, delta){
@@ -77,7 +81,7 @@ var Player = ex.Actor.extend({
             
             // todo find first active pad
             // todo alternate input method needs to be keyboard and mouse
-            var pad = engine.input.gamepads.at(0);
+            var pad = engine.input.gamepads.at(this.controllerIndex);
             
             // sticks
             var leftAxisY = pad.getAxes(ex.Input.Axes.LeftStickY);
@@ -121,7 +125,7 @@ var Player = ex.Actor.extend({
             
             
             if(pad.getButton(ex.Input.Buttons.RightTrigger) > .1){
-            	this.fire.call(player, engine.currentScene);
+            	this.fire(engine.currentScene);
             }
             
             if(pad.getButton(ex.Input.Buttons.LeftTrigger) > .1){
@@ -221,7 +225,7 @@ var Player = ex.Actor.extend({
             this.lastHit = Date.now();
             value = value || 1;
             
-            battery.level = Math.max((battery.level - value), 0);
+            this.battery.level = Math.max((this.battery.level - value), 0);
             Resources.DamageSound.play();
             if(this.goingRight){
                   this.setDrawing("rightDamage");     
