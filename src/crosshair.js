@@ -31,6 +31,15 @@ var CrossHair = ex.Actor.extend({
 		
 	},
 	
+	update: function(engine, delta){
+		ex.Actor.prototype.update.apply(this, [engine, delta]);
+		if(this.x < this.player.x){
+           this.player.gunSprite.flipVertical = true;
+        }else{
+           this.player.gunSprite.flipVertical = false;   
+        }
+	},
+	
 	onInitialize: function (engine){
 		this.setZIndex(this.player.getZIndex()-99);
 	},

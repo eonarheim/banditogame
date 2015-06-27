@@ -11,8 +11,8 @@ var Player = ex.Actor.extend({
             
             this.controllerIndex = controllerIndex;
             //this.collisionType = ex.CollisionType.Active;
-            
-            this.gunSprite =  Resources.GunSprite.asSprite();
+
+            this.gunSprite = Resources.GunSprite.asSprite();                        
             this.spriteSheet = new ex.SpriteSheet(controllerIndex === 0? Resources.RobitoSpriteSheet : Resources.RobitoSpriteSheetRed, 8, 1, 32, 32);
             
             // configure animations
@@ -44,10 +44,10 @@ var Player = ex.Actor.extend({
             this.rigthDamageAnim.loop = true;
             
             
-            this.gunSprite.scale.setTo(4, 4);
+            
              
             this.gun = new ex.Actor(0, this.getHeight()/5, 20, 20);
-            this.gun.addDrawing("default", this.gunSprite);           
+                   
             
             this.addChild(this.gun);
                                                 
@@ -70,6 +70,12 @@ var Player = ex.Actor.extend({
             engine.add(this.barrel);
             engine.add(this.battery);
 	},
+      
+      onInitialize: function(){
+            this.gunSprite = Resources.GunSprite.asSprite().clone();
+            this.gunSprite.scale.setTo(4, 4);
+            this.gun.addDrawing("default", this.gunSprite);   
+      },      
 
 	update: function(engine, delta){
             ex.Actor.prototype.update.apply(this, [engine, delta]);
