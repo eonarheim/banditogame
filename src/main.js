@@ -22,14 +22,24 @@ for(var resouce in Resources){
 		});
 	}
 }
-var barrel = new Barrel(20, 20, engine);
-var player = new Player(engine.getWidth()/2, engine.getHeight()/2 , 32*2.5, 32*2.5, barrel);
+
+
+
+var players = [];
+var player = new Player(engine.getWidth()/2, engine.getHeight()/2 , 32*2.5, 32*2.5, 0);
+players.push(player);
+
+var addPlayer = function(){
+	var newPlayer = new Player(engine.getWidth()/2, engine.getHeight()/2 , 32*2.5, 32*2.5, 1);
+	players.push(newPlayer);
+	engine.add(newPlayer);
+}
 
 
 var cactus = new Cactus(400, 200);
 var cactus2 = new Cactus(600, 400);
 var cactus3 = new Cactus(500, 700);
-var battery = new Battery(20, 400);
+
 
 for(var i = 0; i < 20; i++){
 	engine.add(new Rock(ex.Util.randomIntInRange(-2000, 2000), ex.Util.randomIntInRange(-2000, 2000)));
@@ -56,19 +66,22 @@ for(var i = 0; i < 5; i++){
 setInterval(function(){ baddies.forEach(function(b){b.changeLocation();}) }, 6000);
 
 engine.add(player);
-engine.add(barrel);
-engine.add(battery);
-
 
 engine.add(cactus);
 engine.add(cactus2);
 engine.add(cactus3);
 
 
+
+var currentControllers = [];
 var cameraVel = new ex.Vector(0, 0);
 engine.on('update', function(){
+	var playerAvg = players.reduce(function(last, current, i){
+		return new ex.Vector(last.x + current.x, last.y + current.y);
+	}, ex.Vector.Zero.clone()).scale(1/players.length);
+	
 	var focus = engine.currentScene.camera.getFocus().toVector();
-	var position = new ex.Vector(player.x, player.y);
+	var position = new ex.Vector(playerAvg.x, playerAvg.y);
 	
 	var stretch = position.minus(focus).scale(Config.CameraElasticity);
 	cameraVel = cameraVel.plus(stretch);
@@ -79,6 +92,12 @@ engine.on('update', function(){
 	focus = focus.plus(cameraVel);
 	engine.currentScene.camera.setFocus(focus.x, focus.y);
 	
+	currentControllers = engine.input.gamepads._pads.filter(function(p){
+		return p.connected;
+	});
+	if(currentControllers.length > players.length){
+		addPlayer();
+	}
 });
 
 

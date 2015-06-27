@@ -13,8 +13,8 @@ var Health = ex.Actor.extend({
 		this.collisionType = ex.CollisionType.Passive;
 		
 		this.on('collision', function(ce){
-			if(ce.other === player){
-				battery.level = Math.min(battery.level + 1, battery.maxLevel);
+			if(players.indexOf(ce.other) > -1){
+				ce.other.battery.level = Math.min(ce.other.battery.level + 1, ce.other.battery.maxLevel);
 				Resources.PickupSound.play();
 				this.kill();
 			} 
