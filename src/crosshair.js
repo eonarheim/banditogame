@@ -21,7 +21,7 @@ var CrossHair = ex.Actor.extend({
 		
 		engine.input.pointers.primary.on("down", function(pe){
 			if(pe.button === ex.Input.PointerButton.Left){
-				player.fire(engine.currentScene);
+				player.fire.apply(player, [engine.currentScene]);
 			}else{
 				player.barrel.reload();
 			}

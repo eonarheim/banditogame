@@ -93,8 +93,8 @@ var Player = ex.Actor.extend({
             
             if(rightVector.distance() > .1){
                this.gun.rotation = rightVector.toAngle();
-               this.crosshair.x = crossHairVector.x + this.x + this.width/4 + 10;
-               this.crosshair.y = crossHairVector.y + this.y + this.height/4 + 10;                             
+               this.crosshair.x = crossHairVector.x + this.x;
+               this.crosshair.y = crossHairVector.y + this.y;                              
             }
                         
             if(magnitude > .2){
@@ -121,7 +121,7 @@ var Player = ex.Actor.extend({
             
             
             if(pad.getButton(ex.Input.Buttons.RightTrigger) > .1){
-            	this.fire(engine.currentScene);
+            	this.fire.call(player, engine.currentScene);
             }
             
             if(pad.getButton(ex.Input.Buttons.LeftTrigger) > .1){
