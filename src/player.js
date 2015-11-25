@@ -17,30 +17,30 @@ var Player = ex.Actor.extend({
             
             // configure animations
             this.leftAnim = this.spriteSheet.getAnimationBetween(engine, 3, 7, 100);
-            this.leftAnim.scale.setTo(4, 4);
+            //this.leftAnim.scale.setTo(4, 4);
             this.leftAnim.loop = true;
             
             this.rightAnim = this.spriteSheet.getAnimationBetween(engine, 3, 7, 100);
             this.rightAnim.flipHorizontal = true;
-            this.rightAnim.scale.setTo(4, 4);
+            //this.rightAnim.scale.setTo(4, 4);
             this.rightAnim.loop = true;
             
             this.leftIdleAnim = this.spriteSheet.getAnimationByIndices(engine, [3, 3, 3, 3, 3, 3, 3, 3, 2], 200);
-            this.leftIdleAnim.scale.setTo(4, 4);
+            //this.leftIdleAnim.scale.setTo(4, 4);
             this.leftIdleAnim.loop = true;
             
             this.rightIdleAnim = this.spriteSheet.getAnimationByIndices(engine, [3, 3, 3, 3, 3, 3, 3, 3, 2], 200);
             this.rightIdleAnim.flipHorizontal = true;
-            this.rightIdleAnim.scale.setTo(4, 4);
+            //this.rightIdleAnim.scale.setTo(4, 4);
             this.rightIdleAnim.loop = true;
             
             this.leftDamageAnim = this.spriteSheet.getAnimationByIndices(engine, [0, 1, 0, 1], 400);
-            this.leftDamageAnim.scale.setTo(4, 4);
+            //this.leftDamageAnim.scale.setTo(4, 4);
             this.leftDamageAnim.loop = true;
             
             this.rigthDamageAnim = this.spriteSheet.getAnimationByIndices(engine, [0, 1, 0, 1], 400);
             this.rigthDamageAnim.flipHorizontal = true;
-            this.rigthDamageAnim.scale.setTo(4, 4);
+            //this.rigthDamageAnim.scale.setTo(4, 4);
             this.rigthDamageAnim.loop = true;
             
             
@@ -49,7 +49,7 @@ var Player = ex.Actor.extend({
             this.gun = new ex.Actor(0, this.getHeight()/5, 20, 20);
                    
             
-            this.addChild(this.gun);
+            this.add(this.gun);
                                                 
             this.addDrawing("left", this.leftAnim);
             this.addDrawing("right", this.rightAnim);
@@ -73,12 +73,18 @@ var Player = ex.Actor.extend({
       
       onInitialize: function(){
             this.gunSprite = Resources.GunSprite.asSprite().clone();
-            this.gunSprite.scale.setTo(4, 4);
+            //this.gunSprite.scale.setTo(4, 4);
             this.gun.addDrawing("default", this.gunSprite);   
       },      
 
 	update: function(engine, delta){
             ex.Actor.prototype.update.apply(this, [engine, delta]);
+            
+            var mapCollision = tm.collides(this);
+            if(mapCollision) {
+                  this.x += mapCollision.x;
+                  this.y += mapCollision.y;
+            }
             
             // clear move
             this.dx = 0;
@@ -97,7 +103,7 @@ var Player = ex.Actor.extend({
             
             
             var rightVector = new ex.Vector(rightAxisX, rightAxisY);
-            var crossHairVector = rightVector.scale(400);
+            var crossHairVector = rightVector.scale(400/4);
             var leftVector = new ex.Vector(leftAxisX, leftAxisY);
             var magnitude = leftVector.distance()
             
@@ -113,19 +119,19 @@ var Player = ex.Actor.extend({
             	this.dy = leftVector.y * Config.PlayerSpeed;
             }
             
-            if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.W)) {
+            if (engine.input.keyboard.isHeld(ex.Input.Keys.W)) {
                this.dy = -Config.PlayerSpeed;
             }
             
-            if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.S)) {
+            if (engine.input.keyboard.isHeld(ex.Input.Keys.S)) {
                this.dy = Config.PlayerSpeed;
             }
             
-            if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.A)) {
+            if (engine.input.keyboard.isHeld(ex.Input.Keys.A)) {
                this.dx = -Config.PlayerSpeed;
             }
             
-            if (engine.input.keyboard.isKeyPressed(ex.Input.Keys.D)) {
+            if (engine.input.keyboard.isHeld(ex.Input.Keys.D)) {
                this.dx = Config.PlayerSpeed;
             }
             
@@ -207,7 +213,7 @@ var Player = ex.Actor.extend({
 		var currentTime = Date.now();
 		if(currentTime - this.lastFire > Config.PlayerFireInterval && this.barrel.ammo && !this.barrel.reloading){
 			this.barrel.fire();
-			var bulletOffset = new ex.Vector(30, 0);
+			var bulletOffset = new ex.Vector(30/4, 0);
 			bulletOffset = bulletOffset.rotate(this.gun.rotation, ex.Vector.Zero);
 			var bullet = new Bullet(this.gun.getWorldX() + bulletOffset.x, 
                                           this.gun.getWorldY() + bulletOffset.y, 
@@ -216,7 +222,7 @@ var Player = ex.Actor.extend({
                                           
                   
 			scene.add(bullet);
-                  this.scene.camera.shake(4, 4, 150);
+                  this.scene.camera.shake(2, 2, 150);
 			this.lastFire = currentTime;
 		}
 

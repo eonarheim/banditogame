@@ -1,5 +1,5 @@
 var Config = {
-	PlayerSpeed: 300,
+	PlayerSpeed: 300/2,
 	PlayerRadius: 300,
 	PlayerFireInterval: 300,
 	PlayerHitInterval: 1000,
@@ -33,16 +33,16 @@ var Config = {
 	
 	BaddieWidth: 100,
     BaddieHeight: 100,
-	BaddieSpeed: 300,
+	BaddieSpeed: 300/4,
 	BaddieMinMoveTime: 500,
 	BaddieMaxMoveTime: 2000,
 	BaddieChangeInterval: 1000,
 	BaddieFireInterval: 100,
 	BaddieClusterNumber: 3,
-	BaddieTargetRadius: 200,
+	BaddieTargetRadius: 200/4,
 
-	BulletSize: 20,
-	BulletSpeed: 550,
+	BulletSize: 10,
+	BulletSpeed: 550/4,
 	BulletLifetime: 20000,
-	PlayerBulletSpeed: 800
+	PlayerBulletSpeed: 800/4
 }

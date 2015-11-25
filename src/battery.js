@@ -5,11 +5,11 @@ var Battery = ex.UIActor.extend({
 	level: 10,
 	maxLevel: 10,
 	constructor: function(x, y){
-		ex.UIActor.apply(this, [x, y, 32*4, 76*4]);
+		ex.UIActor.apply(this, [x, y, 32, 76]);
 		this.anchor.setTo(0, 0);
 		this.sprites = new ex.SpriteSheet(Resources.BatterySpriteSheet, 11, 1, 32, 78).sprites;
 		this.sprites.forEach(function(s){
-			s.scale.setTo(4, 4);	
+			//s.scale.setTo(4, 4);	
 		});
 		
 	},

@@ -6,7 +6,7 @@ var Bullet = ex.Actor.extend({
 	constructor: function(x, y, direction, owner){
 		ex.Actor.apply(this, [x, y, Config.BulletSize, Config.BulletSize]);
 		var bulletSprite =  Resources.BulletSprite.asSprite();
-		bulletSprite.scale.setTo(2, 2);
+		bulletSprite.scale.setTo(.5, .5);
 		this.addDrawing("default", bulletSprite);
 
 		this.owner = owner;
@@ -44,6 +44,13 @@ var Bullet = ex.Actor.extend({
 
 	update: function(engine, delta){
 		ex.Actor.prototype.update.apply(this, [engine, delta]);
+		
+		var mapCollision = tm.collides(this);
+		if(mapCollision) {
+				this.x += mapCollision.x;
+				this.y += mapCollision.y;
+				this.kill();
+		}
 		
 		this.life -= delta;
 		if(this.life < 0){

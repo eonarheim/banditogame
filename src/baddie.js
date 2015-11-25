@@ -7,7 +7,7 @@ var Baddie = ex.Actor.extend({
 	lastFire: Date.now(),
 	lastTarget: null,
 	constructor: function(x, y) {
-		ex.Actor.apply(this, [x, y, Config.BaddieWidth, Config.BaddieHeight]);
+		ex.Actor.apply(this, [x, y, Config.BaddieWidth/4, Config.BaddieHeight/4]);
 		
 		this.collisionType = ex.CollisionType.Passive;
 				
@@ -15,13 +15,13 @@ var Baddie = ex.Actor.extend({
 		healthbar = healthbar.getAnimationForAll(engine, 100);
 		this.healthbar = healthbar.sprites;
 		this.healthbar.forEach(function(s){
-			s.scale.setTo(4, 4);
+			//s.scale.setTo(4, 4);
 		});
 		
 		var spriteSheet = new ex.SpriteSheet(Resources.BaddieSpriteSheet, 5, 1, 32, 32);
 		
 		var anim = spriteSheet.getAnimationBetween(engine, 1, 6, 100);
-		anim.scale.setTo(4, 4);
+		//anim.scale.setTo(4, 4);
 		anim.loop = true;
 		
 		this.health = this.MAXHEALTH = 30;
@@ -29,17 +29,17 @@ var Baddie = ex.Actor.extend({
 		this.leftAnim = anim;
 		this.rightAnim = spriteSheet.getAnimationBetween(engine, 1, 6, 100);
 		this.rightAnim.flipHorizontal = true;
-		this.rightAnim.scale.setTo(4, 4);
+		//this.rightAnim.scale.setTo(4, 4);
 		this.rightAnim.loop = true;
 		
 		this.leftIdleAnim = spriteSheet.getAnimationByIndices(engine, [1, 1, 1, 1, 1, 0], 100);
-		this.leftIdleAnim.scale.setTo(4, 4);
+		//this.leftIdleAnim.scale.setTo(4, 4);
 		this.leftIdleAnim.loop = true;
 		
 		
 		this.rightIdleAnim = spriteSheet.getAnimationByIndices(engine, [1, 1, 1, 1, 1, 0], 100);
 		this.rightIdleAnim.flipHorizontal = true;
-		this.rightIdleAnim.scale.setTo(4, 4);
+		//this.rightIdleAnim.scale.setTo(4, 4);
 		this.rightIdleAnim.loop = true;
 				
 		
@@ -54,12 +54,12 @@ var Baddie = ex.Actor.extend({
 	
 	onInitialize: function(){		
 		this.gunSprite = Resources.ShotgunSprite.asSprite().clone();
-		this.gunSprite.scale.setTo(4, 4);
-		this.gun = new ex.Actor(0, this.getHeight()/8, 32*4, 20);
+		//this.gunSprite.scale.setTo(4, 4);
+		this.gun = new ex.Actor(0, this.getHeight()/8, 32, 20);
 		this.gun.addDrawing(this.gunSprite);
 		this.gun.anchor.setTo(.15, .5);
 		
-		this.addChild(this.gun);
+		this.add(this.gun);
 		
 		this.changeLocation();	
 		
@@ -93,6 +93,12 @@ var Baddie = ex.Actor.extend({
 	
 	update: function(engine, delta){
 		ex.Actor.prototype.update.apply(this, [engine, delta]);
+		
+		var mapCollision = tm.collides(this);
+		if(mapCollision) {
+				this.x += mapCollision.x;
+				this.y += mapCollision.y;
+		}
 		
 		if(this.dx > 0){
 			this.goingRight = true;
@@ -146,7 +152,7 @@ var Baddie = ex.Actor.extend({
 		
 		var index = Math.max(this.MAXHEALTH - Math.max(this.health, 0), 0);		
 		
-		this.healthbar[index].draw(ctx, this.x - this.getWidth()/2, this.y-140);
+		this.healthbar[index].draw(ctx, this.x - this.getWidth()/2, this.y-140/4);
 	},
 	
 	debugDraw: function(ctx){

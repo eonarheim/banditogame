@@ -5,7 +5,7 @@ var Rock = ex.Actor.extend({
 		ex.Actor.apply(this, [x, y, 32*3, 32*3]);
 		var sprites = (new ex.SpriteSheet(Resources.RockSpriteSheet, 2, 1, 32, 32)).sprites;
 		sprites.forEach(function(s) {
-			s.scale.setTo(4, 4);
+			//s.scale.setTo(4, 4);
 		});
 		
 		this.collisionType = ex.CollisionType.Fixed;

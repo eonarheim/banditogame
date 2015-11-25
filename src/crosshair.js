@@ -4,7 +4,7 @@ var CrossHair = ex.Actor.extend({
 	constructor: function(x, y, engine, player) {
 		ex.Actor.apply(this, [x, y]);
 		var crossHairSprite =  Resources.CrossHairSprite.asSprite();
-		crossHairSprite.scale.setTo(4, 4);
+		//crossHairSprite.scale.setTo(4, 4);
 		this.addDrawing('default', crossHairSprite);
 		this.player = player;
 		var that = this;

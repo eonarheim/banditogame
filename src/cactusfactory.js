@@ -15,7 +15,7 @@ var Cactus = ex.Actor.extend({
       
       var sprite = Resources.Cactii[this.cactusType].asSprite();
       sprite.flipHorizontal = Math.random() > .5 ? true : false;
-      sprite.scale.setTo(4, 4);
+      //sprite.scale.setTo(4, 4);
       this.addDrawing("default", sprite);
       
       this.anchor.setTo(.5, Config.Cactii[this.cactusType].anchory);
